@@ -90,11 +90,11 @@ def game_dict():
                 },
             ],
         },
-            
+
         "away": {
             "team_name": "Washington Wizards",
             "colors": ["Red", "White", "Navy Blue"],
-            "players": [   
+            "players": [
                 {
                     "name": "Bradley Beal",
                     "number": 3,
@@ -182,3 +182,77 @@ def game_dict():
             ]
         }
     }
+
+
+def get_home_team():
+    return game_dict()['home']
+
+
+def get_away_team():
+    return (game_dict()['away'])
+
+
+def get_target_team(team_name):
+    return (get_home_team() if get_home_team()['team_name'] == team_name else get_away_team())
+
+
+def get_team_players(team_name):
+    return get_target_team(team_name)['players']
+
+
+def get_all_players():
+    all_list = []
+    for player in get_home_team()['players']:
+        all_list.append(player)
+    for player in get_away_team()['players']:
+        all_list.append(player)
+    return all_list
+
+
+def player_stats(player_name):
+    all_players = get_all_players()
+    target = None
+    for player in all_players:
+        if (player['name'] == player_name):
+            target = player
+    return target
+
+
+def num_points_per_game(player_name):
+    player = player_stats(player_name)
+    return float(player['points_per_game'])
+
+
+def player_age(player_name):
+    player = player_stats(player_name)
+    return int(player['age'])
+
+
+def team_colors(team_name):
+    return get_target_team(team_name)['colors']
+
+
+def team_names():
+    return [get_home_team()['team_name'], get_away_team()['team_name']]
+
+
+def player_numbers(team_name):
+    return [player['number'] for player in get_team_players(team_name)]
+
+
+def average_rebounds_by_shoe_brand():
+    brand_stats = {}
+    for player in get_all_players():
+        brand = player['shoe_brand']
+        if (brand in brand_stats):
+            brand_stats[brand].append(float(player['rebounds_per_game']))
+        else:
+            brand_stats[brand] = [float(player['rebounds_per_game'])]
+    for brand in brand_stats:
+        average = 0.00
+        for stat in brand_stats[brand]:
+            average += stat
+        average = '{:.2f}'.format(
+            round((average / len(brand_stats[brand])), 2))
+        print(
+            f'{brand}:  {average}')
